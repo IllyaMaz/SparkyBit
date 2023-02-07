@@ -1,7 +1,6 @@
-package com.example.sparkybit_testtask.controller;
+package com.example.sparkybitTesttask.service;
 
-
-import com.example.sparkybit_testtask.InputData;
+import com.example.sparkybitTesttask.inputData.InputData;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -9,33 +8,32 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.pow;
-
 @Service
 public class ReqService {
 
-    private Logger logger = Logger.getLogger(ReqService.class);
+    private static Logger logger = Logger.getLogger(ReqService.class);
 
-    public InputData fibonacci(InputData data){
+    public InputData ParseInputData(InputData data){
         InputData inputFile = new InputData();
         List<String> row = data.getRow();
         List<String> result = new ArrayList<>();
-        for (int i = 0 ; i < row.size(); i++){
-            boolean fibonacciLine = isFibonacciLine(row.get(i));
-            if (fibonacciLine){
-                String reverse = reverse(row.get(i));
+
+        for (String string :row) {
+            boolean fibonacciLine = isFibonacciLine(string);
+            if (fibonacciLine) {
+                String reverse = reverse(string);
                 logger.info("write down: " + reverse);
-                saveToMemory(reverse);
                 result.add(reverse);
             }
         }
+        writeToFile(result);
         inputFile.setRow(result);
         return inputFile;
     }
 
     private static boolean isFibonacciLine(String line){
-
         String[] split = line.split(",");
+
         int length = split.length;
 
         if (length == 1){
@@ -52,11 +50,11 @@ public class ReqService {
             int input3 = input2 - input1;
             boolean fibonacciNumb3 = isFibonacciNumb(input3);
 
-            if ((input3 <= input1) && (input2 > input1) && fibonacciNumb1 == fibonacciNumb2 && fibonacciNumb2 == fibonacciNumb3){
-                return true;
-            } else {
-                return false;
-            }
+            return  input3 <= input1 &&
+                    input2 > input1 &&
+                    fibonacciNumb1 == fibonacciNumb2 &&
+                    fibonacciNumb2 == fibonacciNumb3 &&
+                    fibonacciNumb1 == true;
         }
 
         if (length > 2){
@@ -70,12 +68,15 @@ public class ReqService {
                 int input3 = input2 - input1;
                 boolean fibonacciNumb3 = isFibonacciNumb(input3);
 
-                if ((input3 <= input1) && (input2 > input1) && fibonacciNumb1 == fibonacciNumb2 && fibonacciNumb2 == fibonacciNumb3){
-                    result = result == true;
-                } else {
-                    result = false;
-                }
+                result = input3 <= input1 &&
+                        input2 > input1 &&
+                        fibonacciNumb1 == fibonacciNumb2 &&
+                        fibonacciNumb2 == fibonacciNumb3 &&
+                        fibonacciNumb1 == true;
 
+                if (result == false){
+                    return result;
+                }
             }
             return result;
         }
@@ -83,11 +84,7 @@ public class ReqService {
     }
 
     private static boolean isFibonacciNumb(int numb){
-        if (Math.sqrt(5*(pow(numb,2))-4)%1==0 || Math.sqrt(5*(pow(numb,2))+4)%1==0){
-            return true;
-        }else {
-            return false;
-        }
+        return Math.sqrt(5*(Math.pow(numb,2))-4)%1==0 || Math.sqrt(5*(Math.pow(numb,2))+4)%1==0;
     }
 
     private static String reverse(String line){
@@ -97,16 +94,15 @@ public class ReqService {
             result = line.charAt(i) + result;
         }
         return result;
-
     }
 
-    private static void saveToMemory(String line){
-        try {
-            FileWriter writer = new FileWriter("response.txt",true);
-            writer.write(line + "\n");
-            writer.close();
+    private static void writeToFile(List<String> list){
+        try (FileWriter writer = new FileWriter("response.txt", true)){
+            for (String line : list) {
+                writer.write(line + "\n");
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
     }
 }

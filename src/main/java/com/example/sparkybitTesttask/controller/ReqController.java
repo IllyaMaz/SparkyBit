@@ -1,8 +1,9 @@
-package com.example.sparkybit_testtask.controller;
+package com.example.sparkybitTesttask.controller;
 
 
 
-import com.example.sparkybit_testtask.InputData;
+import com.example.sparkybitTesttask.inputData.InputData;
+import com.example.sparkybitTesttask.service.ReqService;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,8 @@ public class ReqController {
         }
      */
     @PostMapping("fibonacci")
-    public InputData first(@RequestBody InputData data){
-        logger.info("request to fibonacci");
-        return service.fibonacci(data);
+    public InputData PostToFibonacci(@RequestBody InputData data){
+        logger.info("request to fibonacci data: " + data.toString());
+        return service.ParseInputData(data);
     }
 }
