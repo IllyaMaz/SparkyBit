@@ -27,8 +27,8 @@ public class ReqController {
         }
      */
     @PostMapping("fibonacci")
-    public InputData PostToFibonacci(@RequestBody InputData data){
+    public InputData postToFibonacci(@RequestBody InputData data){
         logger.info("request to fibonacci data: " + data.toString());
-        return service.ParseInputData(data);
+        return service.parseInputData(data);
     }
 }

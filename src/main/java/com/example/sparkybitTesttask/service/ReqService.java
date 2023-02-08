@@ -13,7 +13,7 @@ public class ReqService {
 
     private static Logger logger = Logger.getLogger(ReqService.class);
 
-    public InputData ParseInputData(InputData data){
+    public InputData parseInputData(InputData data){
         InputData inputFile = new InputData();
         List<String> row = data.getRow();
         List<String> result = new ArrayList<>();
